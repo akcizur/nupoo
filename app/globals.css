@@ -5,8 +5,8 @@
 @tailwind utilities;
 
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -14,12 +14,153 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--foreground) / 0.11);
+  background: hsl(var(--foreground) / 0.14);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--foreground) / 0.18);
+  background: hsl(var(--foreground) / 0.24);
+}
+
+/* Minimal product UI: flat surfaces, deliberate spacing, predictable hit areas. */
+:root {
+  --ui-control: 36px;
+  --ui-control-sm: 32px;
+  --ui-radius: 7px;
+  --ui-radius-sm: 6px;
+}
+
+html,
+body {
+  min-width: 320px;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+a,
+input,
+textarea,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role='button']:focus-visible {
+  outline: 2px solid hsl(var(--ring) / 0.72);
+  outline-offset: 2px;
+}
+
+/* Keep controls visually consistent across the application. */
+button.h-8,
+button.h-8\.5,
+button.h-9 {
+  min-height: var(--ui-control);
+}
+
+.page-tree-item {
+  min-height: 36px !important;
+  border-radius: var(--ui-radius) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.page-tree-item.is-active {
+  border-color: hsl(var(--border) / 0.9) !important;
+  box-shadow: none !important;
+}
+
+.page-tree-item:hover {
+  transform: none !important;
+}
+
+.neu-control,
+.neu-surface,
+.glass-surface {
+  box-shadow: none !important;
+}
+
+.neu-control:hover {
+  transform: none !important;
+}
+
+.page-title-icon {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: var(--ui-radius) !important;
+  box-shadow: none !important;
+}
+
+.page-title-row {
+  gap: 11px !important;
+}
+
+.page-title-input {
+  font-size: clamp(2rem, 4vw, 2.8rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.inline-toolbar,
+.slash-menu,
+.block-type-menu,
+.block-context-menu {
+  box-shadow: 0 10px 28px hsl(var(--neu-shadow) / 0.34) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.block-control,
+.inline-tool {
+  border-radius: var(--ui-radius-sm) !important;
+  box-shadow: none !important;
+}
+
+.block-control:hover,
+.inline-tool:hover {
+  box-shadow: none !important;
+}
+
+.tiptap {
+  font-size: 16px !important;
+  line-height: 1.68 !important;
+}
+
+.tiptap h1 {
+  font-size: 1.9rem !important;
+  line-height: 1.18 !important;
+}
+
+.tiptap h2 {
+  font-size: 1.45rem !important;
+  line-height: 1.22 !important;
+}
+
+.tiptap h3 {
+  font-size: 1.2rem !important;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --ui-control: 40px;
+    --ui-control-sm: 36px;
+  }
+
+  .page-title-icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .page-title-input {
+    font-size: clamp(1.8rem, 8vw, 2.35rem) !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
