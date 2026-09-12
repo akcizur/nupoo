@@ -135,7 +135,7 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
     const keyboard = (event: KeyboardEvent) => {
       const mod = event.metaKey || event.ctrlKey
       if (mod && event.key.toLowerCase() === 'k') { event.preventDefault(); setSearchOpen(true) }
-      else if (mod && event.key.toLowerCase() === 'n') { event.preventDefault(); handleCreate(null) }
+      else if (mod && event.key.toLowerCase() === 'n') { event.preventDefault(); const id = createPage(null); selectPage(id); setMobileSidebar(false) }
       else if (mod && event.key.toLowerCase() === 'z' && !event.shiftKey) { event.preventDefault(); undo() }
       else if ((mod && event.key.toLowerCase() === 'y') || (mod && event.shiftKey && event.key.toLowerCase() === 'z')) { event.preventDefault(); redo() }
       else if (mod && event.shiftKey && event.key.toLowerCase() === 'f') { event.preventDefault(); toggleFocusMode() }
