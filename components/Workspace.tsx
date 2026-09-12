@@ -48,7 +48,7 @@ function ToolbarButton({ label, children, onClick, disabled = false, mobile = fa
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onClick} className={`${mobile ? 'md:hidden' : ''} text-muted-foreground hover:bg-accent hover:text-accent-foreground disabled:opacity-30`} aria-label={label}>
+          <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onClick} className={`${mobile ? 'md:hidden' : ''} text-muted-foreground hover:bg-accent hover:text-accent-foreground disabled:opacity-30`}>
             {children}
           </Button>
         </TooltipTrigger>
@@ -74,7 +74,6 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
   const initialize = useNupooStore((state) => state.initialize)
   const selectPage = useNupooStore((state) => state.selectPage)
   const createPage = useNupooStore((state) => state.createPage)
-  const updatePage = useNupooStore((state) => state.updatePage)
   const deletePage = useNupooStore((state) => state.deletePage)
   const restorePage = useNupooStore((state) => state.restorePage)
   const permanentlyDeletePage = useNupooStore((state) => state.permanentlyDeletePage)
@@ -199,18 +198,8 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
             </header>
           )}
 
-          <motion.section key={activePageId} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .18, ease: 'easeOut' }} className="mx-auto w-full max-w-4xl px-5 pb-28 pt-12 sm:px-8 sm:pt-16">
-            {current ? (
-              <>
-                <div className="page-title-row mb-8">
-                  <div className="page-title-icon neu-lite grid size-12 shrink-0 place-items-center rounded-[13px]" aria-hidden>▱</div>
-                  <input value={current.title} onChange={(event) => updatePage({ ...current, title: event.target.value, updatedAt: new Date().toISOString() })} className="page-title-input" placeholder="Bez názvu" aria-label="Název stránky" />
-                </div>
-                <Editor page={current} onChange={updatePage} />
-              </>
-            ) : (
-              <div className="grid min-h-[50vh] place-items-center text-sm text-muted-foreground">Vyberte stránku.</div>
-            )}
+          <motion.section key={activePageId} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .18, ease: 'easeOut' }} className="mx-auto w-full max-w-5xl px-2 pb-28 pt-2 sm:px-4 sm:pt-4">
+            {current ? <Editor page={current} onChange={useNupooStore.getState().updatePage} /> : <div className="grid min-h-[50vh] place-items-center text-sm text-muted-foreground">Vyberte stránku.</div>}
           </motion.section>
         </main>
       </div>
