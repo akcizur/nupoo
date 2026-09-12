@@ -143,10 +143,9 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
     }
     window.addEventListener('keydown', keyboard)
     return () => window.removeEventListener('keydown', keyboard)
-  })
+  }, [createPage, redo, selectPage, setSearchOpen, toggleFocusMode, undo])
 
   const current = pages.find((page) => page.id === activePageId)
-  const favoriteCount = pages.filter((page) => page.favorite && !page.trashedAt).length
   const recent = useMemo(() => [...pages].filter((page) => !page.trashedAt && page.id !== activePageId).sort((a, b) => (b.lastOpenedAt || b.updatedAt).localeCompare(a.lastOpenedAt || a.updatedAt)).slice(0, 5), [pages, activePageId])
 
   const navigate = (id: string) => {
@@ -170,11 +169,11 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
       <input ref={importRef} type="file" accept="application/json,.json" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) void importWorkspace(file); event.target.value = '' }} />
 
       <div className="flex min-h-screen">
-        {!focusMode && sidebarOpen && <Sidebar pages={pages} trashCount={trash.length} favoriteCount={favoriteCount} recent={recent} activePageId={activePageId} dark={dark} onSelect={navigate} onCreate={handleCreate} onSearch={() => setSearchOpen(true)} onFavorite={toggleFavorite} onTrash={() => setTrashOpen(true)} onExport={() => downloadExport(pages, trash)} onImport={() => importRef.current?.click()} onToggleTheme={toggleDark} onToggleOpen={() => setSidebarOpen(false)} />}
+        {!focusMode && sidebarOpen && <Sidebar pages={pages} trashCount={trash.length} recent={recent} activePageId={activePageId} dark={dark} onSelect={navigate} onCreate={handleCreate} onSearch={() => setSearchOpen(true)} onFavorite={toggleFavorite} onTrash={() => setTrashOpen(true)} onExport={() => downloadExport(pages, trash)} onImport={() => importRef.current?.click()} onToggleTheme={toggleDark} onToggleOpen={() => setSidebarOpen(false)} />}
 
         <AnimatePresence>{!focusMode && mobileSidebar && <>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-40 bg-black/45 md:hidden" onMouseDown={() => setMobileSidebar(false)} />
-          <Sidebar mobile pages={pages} trashCount={trash.length} favoriteCount={favoriteCount} recent={recent} activePageId={activePageId} dark={dark} onSelect={navigate} onCreate={handleCreate} onSearch={() => setSearchOpen(true)} onFavorite={toggleFavorite} onTrash={() => setTrashOpen(true)} onExport={() => downloadExport(pages, trash)} onImport={() => importRef.current?.click()} onToggleTheme={toggleDark} onToggleOpen={() => setMobileSidebar(false)} onCloseMobile={() => setMobileSidebar(false)} />
+          <Sidebar mobile pages={pages} trashCount={trash.length} recent={recent} activePageId={activePageId} dark={dark} onSelect={navigate} onCreate={handleCreate} onSearch={() => setSearchOpen(true)} onFavorite={toggleFavorite} onTrash={() => setTrashOpen(true)} onExport={() => downloadExport(pages, trash)} onImport={() => importRef.current?.click()} onToggleTheme={toggleDark} onToggleOpen={() => setMobileSidebar(false)} onCloseMobile={() => setMobileSidebar(false)} />
         </>}</AnimatePresence>
 
         <main className="min-w-0 flex-1">
