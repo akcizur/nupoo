@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Archive, Download, FilePlus2, Folder, Moon, PanelLeftClose, Search, Star, Sun, Trash2, Upload, X } from 'lucide-react'
+import { Archive, Download, FilePlus2, Moon, PanelLeftClose, Search, Star, Sun, Trash2, Upload, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import PageTree from './PageTree'
@@ -10,7 +10,6 @@ import type { Page } from '@/lib/storage'
 type SidebarProps = {
   pages: Page[]
   trashCount: number
-  favoriteCount: number
   recent: Page[]
   activePageId: string
   dark: boolean
@@ -27,16 +26,15 @@ type SidebarProps = {
   mobile?: boolean
 }
 
-function NavButton({ icon, children, shortcut, onClick, active = false }: { icon: React.ReactNode; children: React.ReactNode; shortcut?: string; onClick: () => void; active?: boolean }) {
+function NavButton({ icon, children, onClick, active = false }: { icon: React.ReactNode; children: React.ReactNode; onClick: () => void; active?: boolean }) {
   return (
     <Button
       variant="ghost"
       onClick={onClick}
-      className={`group h-8.5 w-full justify-start gap-2.5 rounded-[8px] px-2.5 text-[13px] font-medium transition-[background,color,box-shadow,transform] duration-150 active:scale-[.985] ${active ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-[0_1px_2px_hsl(var(--foreground)/.08),inset_0_1px_0_hsl(var(--neu-hi))]' : 'text-sidebar-foreground/76 hover:bg-sidebar-accent/65 hover:text-sidebar-accent-foreground'}`}
+      className={`group h-8.5 w-full justify-start gap-2.5 rounded-[8px] px-2.5 text-[13px] font-medium transition-[background,color,box-shadow,transform] duration-150 active:scale-[.985] ${active ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-[0_1px_2px_hsl(var(--foreground)/.08),inset_0_1px_0_hsl(var(--neu-highlight))]' : 'text-sidebar-foreground/76 hover:bg-sidebar-accent/65 hover:text-sidebar-accent-foreground'}`}
     >
       <span className="grid size-5 shrink-0 place-items-center text-sidebar-foreground/52 transition-colors group-hover:text-current">{icon}</span>
       <span className="min-w-0 flex-1 truncate text-left">{children}</span>
-      {shortcut && <kbd className="rounded-md border border-sidebar-border/80 bg-sidebar-background/50 px-1.5 py-0.5 font-mono text-[9px] text-sidebar-foreground/40">{shortcut}</kbd>}
     </Button>
   )
 }
@@ -58,7 +56,7 @@ export default function Sidebar(props: SidebarProps) {
       data-sidebar="shell"
     >
       <div className="flex h-[58px] shrink-0 items-center gap-2.5 px-3">
-        <div className="grid size-8 place-items-center rounded-[10px] bg-sidebar-primary text-sidebar-primary-foreground shadow-[0_3px_12px_hsl(var(--neu-lo))]">
+        <div className="grid size-8 place-items-center rounded-[10px] bg-sidebar-primary text-sidebar-primary-foreground shadow-[0_3px_12px_hsl(var(--neu-shadow))]">
           <span className="text-[13px] font-bold tracking-[-.06em]">N</span>
         </div>
         <div className="min-w-0 flex-1">
@@ -81,7 +79,7 @@ export default function Sidebar(props: SidebarProps) {
         <motion.button
           whileTap={{ scale: .985 }}
           onClick={props.onSearch}
-          className="flex h-9 w-full items-center gap-2 rounded-lg border border-sidebar-border/60 bg-sidebar-accent/45 px-2.5 text-left text-[12px] text-sidebar-foreground/58 shadow-[inset_0_1px_0_hsl(var(--neu-hi))] transition-colors duration-150 hover:bg-sidebar-accent/70 hover:text-sidebar-foreground"
+          className="flex h-9 w-full items-center gap-2 rounded-lg border border-sidebar-border/60 bg-sidebar-accent/45 px-2.5 text-left text-[12px] text-sidebar-foreground/58 shadow-[inset_0_1px_0_hsl(var(--neu-highlight))] transition-colors duration-150 hover:bg-sidebar-accent/70 hover:text-sidebar-foreground"
         >
           <Search size={14} />
           <span className="min-w-0 flex-1 truncate">Hledat</span>
@@ -90,7 +88,7 @@ export default function Sidebar(props: SidebarProps) {
       </div>
 
       <div className="px-2.5 pt-2">
-        <Button onClick={() => props.onCreate(null)} className="neu-lite neu-lite-hover neu-lite-pressed h-9 w-full justify-start gap-2 rounded-lg border border-sidebar-border/70 bg-sidebar-accent/55 px-2.5 text-[13px] font-medium text-sidebar-foreground shadow-none hover:bg-sidebar-accent/80">
+        <Button onClick={() => props.onCreate(null)} className="neu-control h-9 w-full justify-start gap-2 rounded-lg border border-sidebar-border/70 bg-sidebar-accent/55 px-2.5 text-[13px] font-medium text-sidebar-foreground shadow-none hover:bg-sidebar-accent/80">
           <FilePlus2 size={15} />
           <span className="flex-1 text-left">Nová stránka</span>
           <kbd className="rounded-md border border-sidebar-border/70 px-1.5 py-0.5 font-mono text-[9px] text-sidebar-foreground/38">⌘N</kbd>
