@@ -11,12 +11,11 @@
   --np-text: hsl(var(--sidebar-foreground));
   --np-muted: hsl(var(--muted-foreground));
   --np-border: hsl(var(--sidebar-border) / .85);
-  --np-shadow-in: inset 0 1px 0 hsl(var(--neu-hi));
-  --np-shadow-soft: 0 5px 18px hsl(var(--neu-lo));
-  --np-shadow-pressed: inset 1px 2px 5px hsl(var(--neu-lo));
+  --np-shadow-in: inset 0 1px 0 hsl(var(--neu-highlight));
+  --np-shadow-soft: 0 5px 18px hsl(var(--neu-shadow));
+  --np-shadow-pressed: inset 1px 2px 5px hsl(var(--neu-shadow));
 }
 
-/* Desktop application rail */
 @media (min-width: 768px) {
   body > * aside.hidden.md\:flex {
     width: var(--np-sidebar-w) !important;
@@ -24,14 +23,13 @@
       radial-gradient(circle at 50% -15%, hsl(var(--surface-glow)), transparent 42%),
       var(--np-bg) !important;
     border-right: 1px solid var(--np-border) !important;
-    box-shadow: 10px 0 34px hsl(var(--neu-lo) / .18);
+    box-shadow: 10px 0 34px hsl(var(--neu-shadow) / .18);
     padding: 10px 9px 9px;
     gap: 0;
     position: relative;
     overflow: hidden;
   }
 
-  /* Brand / workspace switcher */
   body > * aside.hidden.md\:flex > div:first-child {
     height: 42px;
     padding: 0 7px !important;
@@ -51,7 +49,7 @@
     border-radius: 8px !important;
     background: hsl(var(--foreground)) !important;
     color: hsl(var(--background)) !important;
-    box-shadow: 1px 2px 7px hsl(var(--neu-lo)), var(--np-shadow-in);
+    box-shadow: 1px 2px 7px hsl(var(--neu-shadow)), var(--np-shadow-in);
   }
   body > * aside.hidden.md\:flex > div:first-child > span:first-of-type {
     font-size: 13px;
@@ -63,7 +61,6 @@
     letter-spacing: .14em !important;
   }
 
-  /* Quick actions */
   body > * aside.hidden.md\:flex > div:nth-child(2) {
     display: grid;
     grid-template-columns: 1fr;
@@ -98,7 +95,6 @@
     color: hsl(var(--muted-foreground) / .72) !important;
   }
 
-  /* Section label */
   body > * aside.hidden.md\:flex > div:nth-child(3) {
     padding: 17px 8px 7px !important;
     color: hsl(var(--muted-foreground) / .72) !important;
@@ -107,7 +103,6 @@
     letter-spacing: .16em !important;
   }
 
-  /* Tree viewport */
   body > * aside.hidden.md\:flex > div:nth-child(4) {
     padding: 0 1px 6px !important;
     scrollbar-gutter: stable;
@@ -118,7 +113,6 @@
     padding: 2px 2px 12px !important;
   }
 
-  /* Tree rows: pure nested hierarchy, no connector graphics */
   .page-tree-item {
     min-height: 32px !important;
     border: 1px solid transparent !important;
@@ -137,55 +131,25 @@
     background: hsl(var(--sidebar-accent)) !important;
     border-color: hsl(var(--sidebar-border) / .82) !important;
     color: hsl(var(--sidebar-accent-foreground)) !important;
-    box-shadow: 1px 2px 8px hsl(var(--neu-lo)), inset 0 1px 0 hsl(var(--neu-hi)) !important;
+    box-shadow: 1px 2px 8px hsl(var(--neu-shadow)), inset 0 1px 0 hsl(var(--neu-highlight)) !important;
   }
   .page-tree-item.is-active .page-tree-icon {
     color: hsl(var(--sidebar-accent-foreground) / .92) !important;
   }
-  .page-tree-caret-wrap {
-    width: 26px !important;
-  }
-  .page-tree-caret {
-    width: 24px !important;
-    height: 24px !important;
-    border-radius: 7px !important;
-  }
-  .page-tree-main {
-    gap: 7px !important;
-    padding-left: 3px !important;
-    padding-right: 3px !important;
-    min-height: 30px;
-  }
-  .page-tree-icon {
-    width: 17px !important;
-    height: 17px !important;
-    color: hsl(var(--muted-foreground) / .74) !important;
-  }
-  .page-tree-title {
-    font-size: 12.5px !important;
-    letter-spacing: -.005em;
-  }
-  .page-tree-star {
-    opacity: .72;
-  }
-  .page-tree-actions {
-    gap: 0;
-    margin-right: 1px !important;
-  }
-  .page-tree-action {
-    width: 24px !important;
-    height: 24px !important;
-    border-radius: 7px !important;
-  }
+  .page-tree-caret-wrap { width: 26px !important; }
+  .page-tree-caret { width: 24px !important; height: 24px !important; border-radius: 7px !important; }
+  .page-tree-main { gap: 7px !important; padding-left: 3px !important; padding-right: 3px !important; min-height: 30px; }
+  .page-tree-icon { width: 17px !important; height: 17px !important; color: hsl(var(--muted-foreground) / .74) !important; }
+  .page-tree-title { font-size: 12.5px !important; letter-spacing: -.005em; }
+  .page-tree-star { opacity: .72; }
+  .page-tree-actions { gap: 0; margin-right: 1px !important; }
+  .page-tree-action { width: 24px !important; height: 24px !important; border-radius: 7px !important; }
   .page-tree-rail,
   .page-tree-elbow,
   .page-tree-node::after,
   .page-tree-line,
-  .page-tree-branch {
-    display: none !important;
-  }
+  .page-tree-branch { display: none !important; }
 
-  /* Footer becomes a quiet utility zone */
   body > * aside.hidden.md\:flex > div:last-child {
     margin-top: 4px;
     padding: 7px 1px 1px !important;
@@ -209,7 +173,6 @@
   }
 }
 
-/* Remove the old tree connector model everywhere, including mobile */
 .page-tree-rail,
 .page-tree-elbow,
 .page-tree-line,
@@ -218,7 +181,6 @@
   display: none !important;
 }
 
-/* Mobile sidebar: same design language, larger hit targets */
 @media (max-width: 767px) {
   [role="dialog"] aside,
   .fixed.inset-0.z-40 aside {
@@ -226,7 +188,7 @@
       radial-gradient(circle at 50% -12%, hsl(var(--surface-glow)), transparent 46%),
       hsl(var(--sidebar-background)) !important;
     border-right: 1px solid var(--np-border) !important;
-    box-shadow: 16px 0 40px hsl(var(--neu-lo));
+    box-shadow: 16px 0 40px hsl(var(--neu-shadow));
   }
 
   .fixed.inset-0.z-40 aside > div:first-child {
@@ -234,16 +196,10 @@
     padding-bottom: 10px !important;
   }
 
-  .fixed.inset-0.z-40 aside .page-tree-item {
-    min-height: 38px !important;
-  }
-
-  .fixed.inset-0.z-40 aside .page-tree-title {
-    font-size: 13px !important;
-  }
+  .fixed.inset-0.z-40 aside .page-tree-item { min-height: 38px !important; }
+  .fixed.inset-0.z-40 aside .page-tree-title { font-size: 13px !important; }
 }
 
-/* Keep sidebar depth motion subtle and tactile */
 .page-tree-item,
 body > * aside.hidden.md\:flex > div:nth-child(2) > button,
 body > * aside.hidden.md\:flex > div:last-child > button {
