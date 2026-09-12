@@ -1,6 +1,5 @@
 import './globals.css'
 import './motion.css'
-import './shadcn-theme.css'
 import './sidebar-redesign.css'
 import type { Metadata, Viewport } from 'next'
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
