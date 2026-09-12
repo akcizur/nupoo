@@ -1,4 +1,5 @@
-# Nupoo
+# Nupoo 
+- v2.0.2
 
 Nupoo je lehký local-first **blokový workspace** postavený na Next.js, Reactu, TypeScriptu, Tailwind CSS, Tiptapu, dnd-kit a Zustandu. Cíl je rychlé psaní bez serveru, s robustními daty, přirozenou manipulací s bloky a čistým UI.
 
