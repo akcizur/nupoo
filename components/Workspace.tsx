@@ -30,13 +30,13 @@ function Breadcrumbs({ pages, current, onSelect }: { pages: Page[]; current?: Pa
   if (!chain.length) return null
 
   return (
-    <div className="flex min-w-0 items-center gap-1.5 overflow-hidden text-xs text-muted-foreground">
+    <div className="flex min-w-0 items-center gap-1 overflow-hidden text-[11px] text-muted-foreground">
       {chain.map((page, index) => (
-        <span key={page.id} className="flex min-w-0 items-center gap-1.5">
-          <button onClick={() => onSelect(page.id)} className="max-w-[170px] truncate rounded px-1 py-0.5 transition-colors hover:bg-accent hover:text-accent-foreground">
+        <span key={page.id} className="flex min-w-0 items-center gap-1">
+          <button onClick={() => onSelect(page.id)} className="max-w-[150px] truncate rounded-[5px] px-1 py-1 transition-colors hover:bg-accent hover:text-accent-foreground">
             {page.title || 'Bez názvu'}
           </button>
-          {index < chain.length - 1 && <span aria-hidden className="text-muted-foreground/40">/</span>}
+          {index < chain.length - 1 && <span aria-hidden className="text-muted-foreground/35">/</span>}
         </span>
       ))}
     </div>
@@ -48,7 +48,7 @@ function ToolbarButton({ label, children, onClick, disabled = false, mobile = fa
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onClick} aria-label={label} className={`${mobile ? 'md:hidden' : ''} text-muted-foreground hover:bg-accent hover:text-accent-foreground disabled:opacity-30`}>
+          <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onClick} aria-label={label} className={`${mobile ? 'md:hidden' : ''} size-9 rounded-[7px] text-muted-foreground hover:bg-accent hover:text-accent-foreground disabled:opacity-30`}>
             {children}
           </Button>
         </TooltipTrigger>
@@ -172,13 +172,13 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
         {!focusMode && sidebarOpen && <Sidebar pages={pages} trashCount={trash.length} recent={recent} activePageId={activePageId} dark={dark} onSelect={navigate} onCreate={handleCreate} onSearch={() => setSearchOpen(true)} onFavorite={toggleFavorite} onTrash={() => setTrashOpen(true)} onExport={() => downloadExport(pages, trash)} onImport={() => importRef.current?.click()} onToggleTheme={toggleDark} onToggleOpen={() => setSidebarOpen(false)} />}
 
         <AnimatePresence>{!focusMode && mobileSidebar && <>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-40 bg-black/45 md:hidden" onMouseDown={() => setMobileSidebar(false)} />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-40 bg-black/35 md:hidden" onMouseDown={() => setMobileSidebar(false)} />
           <Sidebar mobile pages={pages} trashCount={trash.length} recent={recent} activePageId={activePageId} dark={dark} onSelect={navigate} onCreate={handleCreate} onSearch={() => setSearchOpen(true)} onFavorite={toggleFavorite} onTrash={() => setTrashOpen(true)} onExport={() => downloadExport(pages, trash)} onImport={() => importRef.current?.click()} onToggleTheme={toggleDark} onToggleOpen={() => setMobileSidebar(false)} onCloseMobile={() => setMobileSidebar(false)} />
         </>}</AnimatePresence>
 
         <main className="min-w-0 flex-1">
           {!focusMode && (
-            <header className="sticky top-0 z-30 flex h-12 items-center gap-1.5 border-b border-border/70 bg-background/82 px-2.5 backdrop-blur-xl">
+            <header className="sticky top-0 z-30 flex h-11 items-center gap-1 border-b border-border bg-background/94 px-2 backdrop-blur-md sm:px-3">
               <ToolbarButton label="Otevřít navigaci" mobile onClick={() => setMobileSidebar(true)}><PanelLeft size={16} /></ToolbarButton>
               <ToolbarButton label={sidebarOpen ? 'Skrýt navigaci' : 'Zobrazit navigaci'} onClick={() => setSidebarOpen(!sidebarOpen)}><PanelLeft size={16} /></ToolbarButton>
               <Breadcrumbs pages={pages} current={current} onSelect={navigate} />
@@ -187,7 +187,7 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
                 <ToolbarButton label="Zpět" disabled={!canUndo} onClick={undo}><Undo2 size={15} /></ToolbarButton>
                 <ToolbarButton label="Znovu" disabled={!canRedo} onClick={redo}><Redo2 size={15} /></ToolbarButton>
               </div>
-              <div className="hidden items-center gap-1 text-[10px] font-medium text-muted-foreground/70 lg:flex">
+              <div className="hidden items-center gap-1 px-1 text-[10px] font-medium text-muted-foreground/70 lg:flex">
                 {saveState === 'saving' && <><Loader2 size={11} className="animate-spin" /> Ukládám</>}
                 {saveState === 'saved' && <><Check size={11} /> Uloženo</>}
               </div>
@@ -198,7 +198,7 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
             </header>
           )}
 
-          <motion.section key={activePageId} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .18, ease: 'easeOut' }} className="mx-auto w-full max-w-5xl px-2 pb-28 pt-2 sm:px-4 sm:pt-4">
+          <motion.section key={activePageId} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .12, ease: 'easeOut' }} className="mx-auto w-full max-w-[880px] px-4 pb-28 pt-6 sm:px-7 sm:pt-8 lg:px-9">
             {current ? <Editor page={current} onChange={updatePage} /> : <div className="grid min-h-[50vh] place-items-center text-sm text-muted-foreground">Vyberte stránku.</div>}
           </motion.section>
         </main>
