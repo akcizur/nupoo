@@ -5,6 +5,7 @@ import { dataService } from './data-service'
 import type { Page } from './storage'
 
 type SaveState = 'idle' | 'saving' | 'saved'
+type Snapshot = { pages: Page[]; trash: Page[] }
 type NupooStore = {
   pages: Page[]
   trash: Page[]
@@ -38,11 +39,28 @@ type NupooStore = {
   setSaveState: (state: SaveState) => void
 }
 
-let historyPast: Page[][] = []
-let historyFuture: Page[][] = []
+let historyPast: Snapshot[] = []
+let historyFuture: Snapshot[] = []
 let lastHistoryAt = 0
 let lastHistoryPageId = ''
-const snapshot = (pages: Page[]) => pages.map((page) => ({ ...page, blocks: page.blocks.map((block) => ({ ...block, ...(block.content ? { content: structuredClone(block.content) } : {}) })) }))
+
+const snapshot = (pages: Page[], trash: Page[]): Snapshot => ({
+  pages: pages.map((page) => ({
+    ...page,
+    blocks: page.blocks.map((block) => ({ ...block, ...(block.content ? { content: structuredClone(block.content) } : {}) })),
+  })),
+  trash: trash.map((page) => ({
+    ...page,
+    blocks: page.blocks.map((block) => ({ ...block, ...(block.content ? { content: structuredClone(block.content) } : {}) })),
+  })),
+})
+
+const record = (pages: Page[], trash: Page[]) => {
+  historyPast = [...historyPast, snapshot(pages, trash)].slice(-80)
+  historyFuture = []
+  lastHistoryAt = 0
+  lastHistoryPageId = ''
+}
 
 export const useNupooStore = create<NupooStore>((set, get) => ({
   pages: [],
@@ -79,10 +97,10 @@ export const useNupooStore = create<NupooStore>((set, get) => ({
   })),
 
   createPage: (parentId = null) => {
+    const state = get()
+    record(state.pages, state.trash)
     const page = dataService.create(parentId)
-    historyPast = [...historyPast, snapshot(get().pages)].slice(-80)
-    historyFuture = []
-    set((state) => ({ pages: [...state.pages, page], activePageId: page.id, canUndo: true, canRedo: false }))
+    set((current) => ({ pages: [...current.pages, page], activePageId: page.id, canUndo: true, canRedo: false }))
     return page.id
   },
 
@@ -91,8 +109,10 @@ export const useNupooStore = create<NupooStore>((set, get) => ({
     if (index < 0) return state
     const now = Date.now()
     const coalesce = lastHistoryPageId === page.id && now - lastHistoryAt < 700
-    if (!coalesce) historyPast = [...historyPast, snapshot(state.pages)].slice(-80)
-    historyFuture = []
+    if (!coalesce) {
+      historyPast = [...historyPast, snapshot(state.pages, state.trash)].slice(-80)
+      historyFuture = []
+    }
     lastHistoryAt = now
     lastHistoryPageId = page.id
     return { pages: state.pages.map((item) => item.id === page.id ? page : item), canUndo: true, canRedo: false }
@@ -108,8 +128,7 @@ export const useNupooStore = create<NupooStore>((set, get) => ({
     walk(id)
     const removed = state.pages.filter((page) => ids.has(page.id))
     if (!removed.length) return state
-    historyPast = [...historyPast, snapshot(state.pages)].slice(-80)
-    historyFuture = []
+    record(state.pages, state.trash)
     const timestamp = new Date().toISOString()
     const pages = state.pages.filter((page) => !ids.has(page.id))
     const trash = [...state.trash, ...removed.map((page) => ({ ...page, trashedAt: timestamp }))]
@@ -130,39 +149,65 @@ export const useNupooStore = create<NupooStore>((set, get) => ({
         }
       })
     }
+    record(state.pages, state.trash)
     const restoring = state.trash.filter((page) => subtreeIds.has(page.id)).map((page) => ({
       ...page,
       trashedAt: null,
       parentId: page.parentId && (state.pages.some((item) => item.id === page.parentId) || subtreeIds.has(page.parentId)) ? page.parentId : null,
     }))
-    historyPast = [...historyPast, snapshot(state.pages)].slice(-80)
-    historyFuture = []
     return { trash: state.trash.filter((page) => !subtreeIds.has(page.id)), pages: [...state.pages, ...restoring], activePageId: root.id, canUndo: true, canRedo: false }
   }),
 
-  permanentlyDeletePage: (id) => set((state) => ({ trash: state.trash.filter((page) => page.id !== id) })),
-  emptyTrash: () => set({ trash: [] }),
-  replaceWorkspace: (pages, trash, activePageId) => { historyPast = []; historyFuture = []; set({ pages, trash, activePageId: activePageId || pages[0]?.id || '', canUndo: false, canRedo: false }) },
+  permanentlyDeletePage: (id) => set((state) => {
+    if (!state.trash.some((page) => page.id === id)) return state
+    record(state.pages, state.trash)
+    return { trash: state.trash.filter((page) => page.id !== id), canUndo: true, canRedo: false }
+  }),
+
+  emptyTrash: () => set((state) => {
+    if (!state.trash.length) return state
+    record(state.pages, state.trash)
+    return { trash: [], canUndo: true, canRedo: false }
+  }),
+
+  replaceWorkspace: (pages, trash, activePageId) => {
+    historyPast = []
+    historyFuture = []
+    lastHistoryAt = 0
+    lastHistoryPageId = ''
+    set({ pages, trash, activePageId: activePageId || pages[0]?.id || '', canUndo: false, canRedo: false })
+  },
 
   undo: () => set((state) => {
     const previous = historyPast.pop()
     if (!previous) return state
-    historyFuture.push(snapshot(state.pages))
-    return { pages: previous, canUndo: historyPast.length > 0, canRedo: true, activePageId: previous.some((p) => p.id === state.activePageId) ? state.activePageId : previous[0]?.id || '' }
+    historyFuture.push(snapshot(state.pages, state.trash))
+    return {
+      pages: previous.pages,
+      trash: previous.trash,
+      canUndo: historyPast.length > 0,
+      canRedo: true,
+      activePageId: previous.pages.some((p) => p.id === state.activePageId) ? state.activePageId : previous.pages[0]?.id || '',
+    }
   }),
 
   redo: () => set((state) => {
     const next = historyFuture.pop()
     if (!next) return state
-    historyPast.push(snapshot(state.pages))
-    return { pages: next, canUndo: true, canRedo: historyFuture.length > 0, activePageId: next.some((p) => p.id === state.activePageId) ? state.activePageId : next[0]?.id || '' }
+    historyPast.push(snapshot(state.pages, state.trash))
+    return {
+      pages: next.pages,
+      trash: next.trash,
+      canUndo: true,
+      canRedo: historyFuture.length > 0,
+      activePageId: next.pages.some((p) => p.id === state.activePageId) ? state.activePageId : next.pages[0]?.id || '',
+    }
   }),
 
   toggleFavorite: (id) => set((state) => {
     const page = state.pages.find((item) => item.id === id)
     if (!page) return state
-    historyPast = [...historyPast, snapshot(state.pages)].slice(-80)
-    historyFuture = []
+    record(state.pages, state.trash)
     return { pages: state.pages.map((item) => item.id === id ? { ...item, favorite: !item.favorite, updatedAt: new Date().toISOString() } : item), canUndo: true, canRedo: false }
   }),
 
