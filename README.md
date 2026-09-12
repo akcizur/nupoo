@@ -1,7 +1,7 @@
 # Nupoo 
-- v2.0.2
+- v2.0.3
 
-Nupoo je lehký local-first **blokový workspace** postavený na Next.js, Reactu, TypeScriptu, Tailwind CSS, Tiptapu, dnd-kit a Zustandu. Cíl je rychlé psaní bez serveru, s robustními daty, přirozenou manipulací s bloky a čistým UI.
+Nupoo je lehký local-first **blokový workspace** postavený na Next.js, Reactu, TypeScriptu, Tailwind CSS, Tiptapu, dnd-kit a Zustandu. Cíl je rychlé psaní bez serveru, s robustními daty, přehledným designem a zero friction.
 
 ## Aktuální funkce
 
@@ -35,12 +35,16 @@ app/
   layout.tsx
   page.tsx
   globals.css
+  shadcn-theme.css      # hlavní tema s neumorphism
+  neumorphism.css       # fallback a doplňující styly
 
 components/
   Workspace.tsx
   Editor.tsx
   CommandPalette.tsx
   TrashDialog.tsx
+  PageTree.tsx
+  Sidebar.tsx
 
 lib/
   storage.ts              # typy, migrace a persistence
@@ -49,6 +53,7 @@ lib/
   markdown-shortcuts.ts   # vlastní Markdown shortcuts
   export.ts               # workspace export/import
   store.ts                # Zustand state
+  indexeddb.ts            # IndexedDB adapter
   storage.test.ts         # unit testy datového modelu
 ```
 
@@ -141,7 +146,7 @@ Import workspace nahrazuje aktuální data importovaným snapshotem.
 
 ### Core
 
-- IndexedDB adapter
+- IndexedDB adapter (in progress)
 - granular page/content persistence
 - recovery snapshoty
 - page history
