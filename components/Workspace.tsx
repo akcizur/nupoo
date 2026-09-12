@@ -48,7 +48,7 @@ function ToolbarButton({ label, children, onClick, disabled = false, mobile = fa
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onClick} className={`${mobile ? 'md:hidden' : ''} text-muted-foreground hover:bg-accent hover:text-accent-foreground disabled:opacity-30`}>
+          <Button variant="ghost" size="icon-sm" disabled={disabled} onClick={onClick} aria-label={label} className={`${mobile ? 'md:hidden' : ''} text-muted-foreground hover:bg-accent hover:text-accent-foreground disabled:opacity-30`}>
             {children}
           </Button>
         </TooltipTrigger>
@@ -74,6 +74,7 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
   const initialize = useNupooStore((state) => state.initialize)
   const selectPage = useNupooStore((state) => state.selectPage)
   const createPage = useNupooStore((state) => state.createPage)
+  const updatePage = useNupooStore((state) => state.updatePage)
   const deletePage = useNupooStore((state) => state.deletePage)
   const restorePage = useNupooStore((state) => state.restorePage)
   const permanentlyDeletePage = useNupooStore((state) => state.permanentlyDeletePage)
@@ -124,6 +125,12 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
     window.history.replaceState(null, '', `${url.pathname}${url.search}`)
   }, [activePageId, hydrated])
 
+  const handleCreate = (parentId: string | null = null) => {
+    const id = createPage(parentId)
+    selectPage(id)
+    setMobileSidebar(false)
+  }
+
   useEffect(() => {
     const keyboard = (event: KeyboardEvent) => {
       const mod = event.metaKey || event.ctrlKey
@@ -141,12 +148,6 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
   const current = pages.find((page) => page.id === activePageId)
   const favoriteCount = pages.filter((page) => page.favorite && !page.trashedAt).length
   const recent = useMemo(() => [...pages].filter((page) => !page.trashedAt && page.id !== activePageId).sort((a, b) => (b.lastOpenedAt || b.updatedAt).localeCompare(a.lastOpenedAt || a.updatedAt)).slice(0, 5), [pages, activePageId])
-
-  const handleCreate = (parentId: string | null = null) => {
-    const id = createPage(parentId)
-    selectPage(id)
-    setMobileSidebar(false)
-  }
 
   const navigate = (id: string) => {
     selectPage(id)
@@ -199,7 +200,7 @@ export default function Workspace({ initialPageId }: { initialPageId?: string } 
           )}
 
           <motion.section key={activePageId} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .18, ease: 'easeOut' }} className="mx-auto w-full max-w-5xl px-2 pb-28 pt-2 sm:px-4 sm:pt-4">
-            {current ? <Editor page={current} onChange={useNupooStore.getState().updatePage} /> : <div className="grid min-h-[50vh] place-items-center text-sm text-muted-foreground">Vyberte stránku.</div>}
+            {current ? <Editor page={current} onChange={updatePage} /> : <div className="grid min-h-[50vh] place-items-center text-sm text-muted-foreground">Vyberte stránku.</div>}
           </motion.section>
         </main>
       </div>
