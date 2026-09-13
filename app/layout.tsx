@@ -1,5 +1,4 @@
 import './globals.css'
-import './sidebar-redesign.css'
 import type { Metadata, Viewport } from 'next'
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister'
 
